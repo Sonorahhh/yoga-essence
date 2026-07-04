@@ -20,7 +20,6 @@
     src="https://www.facebook.com/tr?id=1150885160005544&ev=PageView&noscript=1"/></noscript>
     <!-- Einde Meta Pixel -->
     <style>
-        /* Horizon font: zet Horizon.woff2 in de map 'fonts/' naast dit bestand */
         @font-face {
             font-family: 'Horizon';
             src: local('Horizon'), url('fonts/Horizon.woff2') format('woff2');
@@ -138,98 +137,16 @@
 
         hr { border: none; border-top: 1px solid #eee; margin: 32px auto; max-width: 180px; }
 
-        /* POPUP */
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .overlay.open { display: flex; }
-
-        .popup {
-            background: #fff;
-            border-radius: 14px;
-            width: 100%;
+        /* AANMELDEN SECTIE */
+        .aanmelden-wrap {
             max-width: 560px;
-            overflow: hidden;
-            position: relative;
+            margin: 0 auto 40px;
+            padding: 0 24px;
         }
-
-        .progress-wrap { height: 8px; background: #eaeaea; }
-        .progress-bar  { height: 100%; width: 70%; background: var(--btn); border-radius: 0 4px 4px 0; }
-        .progress-label { text-align: center; font-size: 12px; color: #bbb; padding: 6px 0 0; font-style: italic; }
-
-        .popup-inner { padding: 12px; }
-
-        .popup-close {
-            position: absolute;
-            top: 14px; right: 14px;
-            background: none;
-            border: 1px solid #ccc;
-            border-radius: 50%;
-            width: 30px; height: 30px;
-            font-size: 18px;
-            cursor: pointer;
-            color: #888;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .popup-close:hover { color: #333; border-color: #999; }
-
-        .popup h2 {
-            font-size: 21px;
-            font-weight: 800;
-            text-align: center;
-            line-height: 1.3;
-            margin-bottom: 26px;
-            color: #1a1a1a;
-        }
-
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555; }
-        .form-group input {
-            width: 100%;
-            border: none;
-            border-bottom: 2px solid #e0e0e0;
-            padding: 10px 2px;
-            font-size: 15px;
-            font-family: 'Libre Franklin', sans-serif;
-            outline: none;
-            background: transparent;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus { border-bottom-color: var(--teal); }
-        .form-group input::placeholder { color: #ccc; }
-
-        .popup-btn {
-            width: 100%;
-            background: var(--teal);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 16px;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            margin-top: 8px;
-            font-family: 'Libre Franklin', sans-serif;
-            transition: background 0.2s;
-        }
-        .popup-btn:hover { background: var(--teal-dark); }
-
-        .popup-date { text-align: center; margin-top: 16px; font-size: 14px; color: #555; }
-        .popup-note { text-align: center; margin-top: 8px; font-size: 13px; color: #888; font-style: italic; line-height: 1.5; }
 
         @media (max-width: 600px) {
             h1 { font-size: 26px; }
             .subtitle { font-size: 18px; }
-            .popup-inner { padding: 20px 20px 24px; }
-            .popup h2 { font-size: 18px; }
             .cta-btn { padding: 18px 28px; }
         }
     </style>
@@ -245,7 +162,7 @@
     <p class="tagline">Zonder extra programma. Zonder zweverig gedoe.</p>
 
     <div class="cta-wrap">
-        <button class="cta-btn" onclick="openPopup()">
+        <button class="cta-btn" onclick="scrollNaarFormulier()">
             <span class="main-text">JA, IK WIL HIER BIJ ZIJN 🐾</span>
             <span class="sub-text">Aanmelden kan alleen via deze pagina</span>
         </button>
@@ -262,24 +179,18 @@
     <hr>
 
     <div class="cta-wrap">
-        <button class="cta-btn" onclick="openPopup()">
+        <button class="cta-btn" onclick="scrollNaarFormulier()">
             <span class="main-text">JA, DIT WIL IK! 📅</span>
             <span class="sub-text">Vol = vol! Het is live.</span>
         </button>
     </div>
 </div>
 
-<div class="bottom-banner" id="bottom-banner"></div>
-
-<!-- Popup -->
-<div class="overlay" id="overlay">
-    <div class="popup">
-        <button class="popup-close" onclick="closePopup()" aria-label="Sluiten">&#xd7;</button>
-        <div class="popup-inner">
-            <div id="mw_3AKrpViiKCY_webinargeek"></div>
-        </div>
-    </div>
+<div id="aanmelden" class="aanmelden-wrap">
+    <div id="mw_3AKrpViiKCY_webinargeek"></div>
 </div>
+
+<div class="bottom-banner" id="bottom-banner"></div>
 
 <script>
     /* ============================================
@@ -292,38 +203,21 @@
     document.getElementById('top-banner').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD + ' &nbsp;&middot;&nbsp; Aanmelden kan alleen via deze pagina';
     document.getElementById('bottom-banner').innerHTML = '<strong>' + DATUM + ' om ' + TIJD + '!</strong><span>Het is live dus zorg dat je er live bij bent.</span>';
 
-    var wgLoaded = false;
-
-    function openPopup() {
-        document.getElementById('overlay').classList.add('open');
-        document.body.style.overflow = 'hidden';
-        if (!wgLoaded) {
-            wgLoaded = true;
-            var gn = 'mw_3AKrpViiKCY';
-            window[gn] = window[gn] || function() { (window[gn].q = window[gn].q || []).push(arguments); };
-            var se = document.createElement('script');
-            se.async = 1;
-            se.src = 'https://malong.webinargeek.com/malong.embed.js?t=' + new Date().toISOString().slice(0, -9);
-            document.head.appendChild(se);
-            window[gn]('init', {
-                project: 'registration',
-                identifier: '0bce36b8-59ea-47e3-adea-4bf86ca6c4bb',
-                shape: 'inline'
-            });
-        }
+    function scrollNaarFormulier() {
+        document.getElementById('aanmelden').scrollIntoView({behavior: 'smooth'});
     }
+</script>
 
-    function closePopup() {
-        document.getElementById('overlay').classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    document.getElementById('overlay').addEventListener('click', function(e) {
-        if (e.target === this) closePopup();
-    });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closePopup();
-    });
+<script>
+(function(w,d,stn,sa,gn,se,fse){w[gn]=w[gn]||function(){(w[gn].q = w[gn].q||[]).push(arguments)};
+se=d.createElement(stn);fse=d.getElementsByTagName(stn)[0];se.id=gn;se.async=1;
+se.src=sa+"?t="+new Date().toISOString().slice(0, -9);fse.parentNode.insertBefore(se, fse);
+})(window, document, "script", "https://malong.webinargeek.com/malong.embed.js", "mw_3AKrpViiKCY");
+mw_3AKrpViiKCY("init", {
+    project: "registration",
+    identifier: "0bce36b8-59ea-47e3-adea-4bf86ca6c4bb",
+    shape: "inline"
+});
 </script>
 
 </body>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vragenformulier – Van Chaos naar Rust op de Groep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1150885160005544');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1150885160005544&ev=PageView&noscript=1"/></noscript>
+    <!-- Einde Meta Pixel -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --teal: #59bcba;
+            --teal-dark: #48a8a6;
+            --btn: #f60c6e;
+            --btn-hover: #d4055d;
+        }
+
+        body {
+            font-family: 'Libre Franklin', sans-serif;
+            background: #fff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: #eee;
+            z-index: 100;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--teal);
+            transition: width 0.4s ease;
+        }
+
+        /* Screens */
+        .screens { position: relative; }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 80px 24px 60px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .screen.active { display: flex; }
+
+        .screen-inner {
+            width: 100%;
+            max-width: 580px;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: var(--teal);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .intro-emoji { font-size: 28px; margin-bottom: 16px; display: block; }
+
+        .hint {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        /* Text inputs */
+        textarea, input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            padding: 12px 4px;
+            font-size: 17px;
+            font-family: 'Libre Franklin', sans-serif;
+            color: #1a1a1a;
+            background: transparent;
+            outline: none;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        textarea { min-height: 120px; line-height: 1.6; }
+        textarea:focus, input:focus { border-bottom-color: var(--teal); }
+        textarea::placeholder, input::placeholder { color: #ccc; }
+
+        /* Radio & checkbox options */
+        .options { display: flex; flex-direction: column; gap: 10px; text-align: left; margin-bottom: 8px; }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            font-size: 15px;
+            color: #333;
+            user-select: none;
+        }
+        .option:hover { border-color: var(--teal); background: #f0fafa; }
+        .option.selected { border-color: var(--teal); background: #e8f7f7; color: #1a1a1a; font-weight: 600; }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] { display: none; }
+
+        .option-key {
+            width: 26px;
+            height: 26px;
+            border: 1.5px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #aaa;
+            flex-shrink: 0;
+        }
+        .option.selected .option-key {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: #fff;
+        }
+
+        /* Contact fields */
+        .contact-fields { display: flex; flex-direction: column; gap: 28px; text-align: left; }
+        .contact-fields label { font-size: 13px; font-weight: 700; color: #888; display: block; margin-bottom: 4px; }
+        .optional-tag { font-weight: 400; font-size: 11px; }
+
+        /* Buttons */
+        .btn-row { display: flex; gap: 12px; margin-top: 28px; align-items: center; flex-wrap: wrap; }
+
+        .btn-next {
+            background: var(--btn);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Libre Franklin', sans-serif;
+            transition: background 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .btn-next:hover { background: var(--btn-hover); }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Libre Franklin', sans-serif;
+            padding: 14px 0;
+            transition: color 0.2s;
+        }
+        .btn-back:hover { color: #666; }
+
+        .btn-skip {
+            background: none;
+            border: none;
+            color: #bbb;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Libre Franklin', sans-serif;
+            padding: 14px 0;
+            transition: color 0.2s;
+            margin-left: auto;
+        }
+        .btn-skip:hover { color: #888; }
+
+        /* Thank you screen */
+        .thankyou-icon { font-size: 48px; margin-bottom: 20px; }
+        .thankyou-title { font-size: 28px; font-weight: 800; margin-bottom: 14px; line-height: 1.3; }
+        .thankyou-text { font-size: 16px; color: #555; line-height: 1.7; max-width: 480px; margin: 0 auto; }
+
+        @media (max-width: 600px) {
+            h2 { font-size: 21px; }
+            .screen { padding: 70px 20px 50px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="progress-wrap">
+    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+</div>
+
+<div class="screens" id="screens">
+
+    <!-- Stap 1: Open vraag aanmelding -->
+    <div class="screen active" data-step="1">
+        <div class="screen-inner">
+            <span class="intro-emoji">📩</span>
+            <h2>Yes leuk! Laten we beginnen.<br>Wat maakt dat je je hebt aangemeld voor deze masterclass?</h2>
+            <p class="hint">Vertel het in je eigen woorden. Dit geeft waardevolle inzichten.</p>
+            <textarea id="q1" placeholder="Typ hier je antwoord..." rows="5"></textarea>
+            <div class="btn-row">
+                <button class="btn-next" onclick="next(1)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 2: Functie -->
+    <div class="screen" data-step="2">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 2 van 10</p>
+            <h2>Wat is je functie?</h2>
+            <div class="options" id="q2-options">
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">A</span>
+                    <input type="radio" name="q2" value="Pedagogisch professional KDV (babygroep)">
+                    Pedagogisch professional KDV (babygroep)
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">B</span>
+                    <input type="radio" name="q2" value="Pedagogisch professional KDV (peutergroep)">
+                    Pedagogisch professional KDV (peutergroep)
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">C</span>
+                    <input type="radio" name="q2" value="Pedagogisch professional BSO">
+                    Pedagogisch professional BSO
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">D</span>
+                    <input type="radio" name="q2" value="Leerkracht / basisschool">
+                    Leerkracht / basisschool
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">E</span>
+                    <input type="radio" name="q2" value="Locatiemanager / eigenaar kinderopvang">
+                    Locatiemanager / eigenaar kinderopvang
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">F</span>
+                    <input type="radio" name="q2" value="Intern begeleider / pedagogisch coach">
+                    Intern begeleider / pedagogisch coach
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">G</span>
+                    <input type="radio" name="q2" value="Gastouder">
+                    Gastouder
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">H</span>
+                    <input type="radio" name="q2" value="Flex/inval">
+                    Flex / inval
+                </label>
+                <label class="option" onclick="selectOption(this, 'q2', false)">
+                    <span class="option-key">I</span>
+                    <input type="radio" name="q2" value="Anders">
+                    Anders
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(2)">← Terug</button>
+                <button class="btn-next" onclick="next(2)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 3: Frequentie leeg gevoel -->
+    <div class="screen" data-step="3">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 3 van 10</p>
+            <h2>Hoe vaak voel je je leeg aan het einde van je werkdag?</h2>
+            <div class="options" id="q3-options">
+                <label class="option" onclick="selectOption(this, 'q3', false)">
+                    <span class="option-key">A</span>
+                    <input type="radio" name="q3" value="Zelden">Zelden
+                </label>
+                <label class="option" onclick="selectOption(this, 'q3', false)">
+                    <span class="option-key">B</span>
+                    <input type="radio" name="q3" value="Soms">Soms
+                </label>
+                <label class="option" onclick="selectOption(this, 'q3', false)">
+                    <span class="option-key">C</span>
+                    <input type="radio" name="q3" value="Meerdere keren per week">Meerdere keren per week
+                </label>
+                <label class="option" onclick="selectOption(this, 'q3', false)">
+                    <span class="option-key">D</span>
+                    <input type="radio" name="q3" value="Bijna elke dag">Bijna elke dag
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(3)">← Terug</button>
+                <button class="btn-next" onclick="next(3)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 4: Herkenningspunten (meerkeuze) -->
+    <div class="screen" data-step="4">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 4 van 10</p>
+            <h2>Wat herken jij? Meerdere antwoorden mogelijk.</h2>
+            <div class="options" id="q4-options">
+                <label class="option" onclick="selectOption(this, 'q4', true)">
+                    <span class="option-key">A</span>
+                    <input type="checkbox" name="q4" value="Het voelt alsof ik steeds achter de feiten aanloop">
+                    Het voelt alsof ik steeds achter de feiten aanloop
+                </label>
+                <label class="option" onclick="selectOption(this, 'q4', true)">
+                    <span class="option-key">B</span>
+                    <input type="checkbox" name="q4" value="Kinderen zijn moeilijk tot rust te krijgen op de groep">
+                    Kinderen zijn moeilijk tot rust te krijgen op de groep
+                </label>
+                <label class="option" onclick="selectOption(this, 'q4', true)">
+                    <span class="option-key">C</span>
+                    <input type="checkbox" name="q4" value="Ik voel me schuldig dat ik niet genoeg aandacht kan geven">
+                    Ik voel me schuldig dat ik niet genoeg aandacht kan geven
+                </label>
+                <label class="option" onclick="selectOption(this, 'q4', true)">
+                    <span class="option-key">D</span>
+                    <input type="checkbox" name="q4" value="Ik ga met spanning naar huis en kan moeilijk loslaten">
+                    Ik ga met spanning naar huis en kan moeilijk loslaten
+                </label>
+                <label class="option" onclick="selectOption(this, 'q4', true)">
+                    <span class="option-key">E</span>
+                    <input type="checkbox" name="q4" value="Ik mis plezier en voldoening in mijn werk">
+                    Ik mis plezier en voldoening in mijn werk
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(4)">← Terug</button>
+                <button class="btn-next" onclick="next(4)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 5: Leeftijdsgroep -->
+    <div class="screen" data-step="5">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 5 van 10</p>
+            <h2>Met welke leeftijdsgroep werk jij? Meerdere antwoorden mogelijk.</h2>
+            <div class="options" id="q5-options">
+                <label class="option" onclick="selectOption(this, 'q5', true)">
+                    <span class="option-key">A</span>
+                    <input type="checkbox" name="q5" value="Baby's (0–1 jaar)">Baby's (0–1 jaar)
+                </label>
+                <label class="option" onclick="selectOption(this, 'q5', true)">
+                    <span class="option-key">B</span>
+                    <input type="checkbox" name="q5" value="Peuters (1–3 jaar)">Peuters (1–3 jaar)
+                </label>
+                <label class="option" onclick="selectOption(this, 'q5', true)">
+                    <span class="option-key">C</span>
+                    <input type="checkbox" name="q5" value="Kleuters (3–5 jaar)">Kleuters (3–5 jaar)
+                </label>
+                <label class="option" onclick="selectOption(this, 'q5', true)">
+                    <span class="option-key">D</span>
+                    <input type="checkbox" name="q5" value="BSO-leeftijd (4–12 jaar)">BSO-leeftijd (4–12 jaar)
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(5)">← Terug</button>
+                <button class="btn-next" onclick="next(5)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 6: Grootste uitdaging -->
+    <div class="screen" data-step="6">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 6 van 10</p>
+            <h2>Wat is op dit moment jouw grootste uitdaging op de groep?</h2>
+            <textarea id="q6" placeholder="Typ hier je antwoord..." rows="5"></textarea>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(6)">← Terug</button>
+                <button class="btn-next" onclick="next(6)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 7: Verlangen -->
+    <div class="screen" data-step="7">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 7 van 10</p>
+            <h2>Wat zou het voor jou betekenen als de groep rustiger wordt?</h2>
+            <textarea id="q7" placeholder="Typ hier je antwoord..." rows="5"></textarea>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(7)">← Terug</button>
+                <button class="btn-next" onclick="next(7)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 8: Eerder geprobeerd -->
+    <div class="screen" data-step="8">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 8 van 10</p>
+            <h2>Heb je eerder iets geprobeerd om meer rust op de groep te brengen?</h2>
+            <div class="options" id="q8-options">
+                <label class="option" onclick="selectOption(this, 'q8', false)">
+                    <span class="option-key">A</span>
+                    <input type="radio" name="q8" value="Ja, het hielp een beetje maar ik zoek iets meer">
+                    Ja, het hielp een beetje maar ik zoek iets meer
+                </label>
+                <label class="option" onclick="selectOption(this, 'q8', false)">
+                    <span class="option-key">B</span>
+                    <input type="radio" name="q8" value="Ja, maar het werkte niet structureel">
+                    Ja, maar het werkte niet structureel
+                </label>
+                <label class="option" onclick="selectOption(this, 'q8', false)">
+                    <span class="option-key">C</span>
+                    <input type="radio" name="q8" value="Nee, ik wist niet goed waar ik moest beginnen">
+                    Nee, ik wist niet goed waar ik moest beginnen
+                </label>
+                <label class="option" onclick="selectOption(this, 'q8', false)">
+                    <span class="option-key">D</span>
+                    <input type="radio" name="q8" value="Nee, ik dacht dat het gewoon bij het werk hoort">
+                    Nee, ik dacht dat het gewoon bij het werk hoort
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(8)">← Terug</button>
+                <button class="btn-next" onclick="next(8)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 9: Weerhoudende factoren -->
+    <div class="screen" data-step="9">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 9 van 10</p>
+            <h2>Wat weerhoudt je er nog van om de volgende stap te zetten? Meerdere antwoorden mogelijk.</h2>
+            <div class="options" id="q9-options">
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">A</span>
+                    <input type="checkbox" name="q9" value="Geen tijd">Geen tijd
+                </label>
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">B</span>
+                    <input type="checkbox" name="q9" value="Ik weet niet zeker of het bij mij past">
+                    Ik weet niet zeker of het bij mij past
+                </label>
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">C</span>
+                    <input type="checkbox" name="q9" value="Twijfel of mijn collega's meedoen">
+                    Twijfel of mijn collega's meedoen
+                </label>
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">D</span>
+                    <input type="checkbox" name="q9" value="Kosten / budget">Kosten / budget
+                </label>
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">E</span>
+                    <input type="checkbox" name="q9" value="Onzekerheid of het echt werkt">
+                    Onzekerheid of het echt werkt
+                </label>
+                <label class="option" onclick="selectOption(this, 'q9', true)">
+                    <span class="option-key">F</span>
+                    <input type="checkbox" name="q9" value="Niets - ik ben er klaar voor">
+                    Niets — ik ben er klaar voor
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(9)">← Terug</button>
+                <button class="btn-next" onclick="next(9)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 10: Persoonlijk contact -->
+    <div class="screen" data-step="10">
+        <div class="screen-inner">
+            <p class="step-label">Vraag 10 van 10</p>
+            <h2>Sta je open voor persoonlijk contact als ik denk dat ik je verder kan helpen? Vóór of na de masterclass?</h2>
+            <div class="options" id="q10-options">
+                <label class="option" onclick="selectOption(this, 'q10', false)">
+                    <span class="option-key">A</span>
+                    <input type="radio" name="q10" value="Ja, dat vind ik fijn">Ja, dat vind ik fijn
+                </label>
+                <label class="option" onclick="selectOption(this, 'q10', false)">
+                    <span class="option-key">B</span>
+                    <input type="radio" name="q10" value="Misschien, ligt eraan">Misschien, ligt eraan
+                </label>
+                <label class="option" onclick="selectOption(this, 'q10', false)">
+                    <span class="option-key">C</span>
+                    <input type="radio" name="q10" value="Nee, liever niet">Nee, liever niet
+                </label>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(10)">← Terug</button>
+                <button class="btn-next" onclick="next(10)">Volgende →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stap 11: Contactgegevens -->
+    <div class="screen" data-step="11">
+        <div class="screen-inner">
+            <h2>Bijna klaar! Vul je gegevens in zodat Esther je kan bereiken.</h2>
+            <p class="hint">Je telefoonnummer is optioneel.</p>
+            <div class="contact-fields">
+                <div>
+                    <label>Naam</label>
+                    <input type="text" id="q_naam" placeholder="Jouw naam" required>
+                </div>
+                <div>
+                    <label>E-mailadres</label>
+                    <input type="email" id="q_email" placeholder="jouw@email.nl" required>
+                </div>
+                <div>
+                    <label>Telefoonnummer <span class="optional-tag">(optioneel)</span></label>
+                    <input type="tel" id="q_telefoon" placeholder="+31 6 ...">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-back" onclick="prev(11)">← Terug</button>
+                <button class="btn-next" onclick="submitForm()">Versturen ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bedankscherm -->
+    <div class="screen" data-step="12">
+        <div class="screen-inner">
+            <div class="thankyou-icon">📺</div>
+            <p class="thankyou-title">Super dankjewel voor je tijd en moeite!</p>
+            <p class="thankyou-text">Ik kijk er naar uit om je te zien in mijn masterclass!</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* ============================================
+       AANPASSEN: vul hier het e-mailadres in waar
+       de antwoorden naartoe gestuurd moeten worden
+       ============================================ */
+    var ONTVANGST_EMAIL = 'info@yoga-essence.nl';
+    /* ============================================ */
+
+    var TOTAL_STEPS = 11;
+    var currentStep = 1;
+
+    function showStep(n) {
+        document.querySelectorAll('.screen').forEach(function(s) {
+            s.classList.remove('active');
+        });
+        var target = document.querySelector('[data-step="' + n + '"]');
+        if (target) target.classList.add('active');
+        var pct = n > TOTAL_STEPS ? 100 : Math.round(((n - 1) / TOTAL_STEPS) * 100);
+        document.getElementById('progress-fill').style.width = pct + '%';
+        window.scrollTo(0, 0);
+    }
+
+    function next(step) {
+        currentStep = step + 1;
+        showStep(currentStep);
+    }
+
+    function prev(step) {
+        currentStep = step - 1;
+        showStep(currentStep);
+    }
+
+    function selectOption(el, name, multi) {
+        if (!multi) {
+            var parent = el.closest('.options');
+            parent.querySelectorAll('.option').forEach(function(o) { o.classList.remove('selected'); });
+        }
+        el.classList.toggle('selected');
+        var inp = el.querySelector('input');
+        if (inp) inp.checked = !multi ? true : inp.checked;
+        if (!multi) {
+            setTimeout(function() { next(currentStep); }, 280);
+        }
+    }
+
+    function getValues(name, multi) {
+        var els = document.querySelectorAll('[name="' + name + '"]');
+        var vals = [];
+        els.forEach(function(el) { if (el.checked) vals.push(el.value); });
+        return multi ? vals.join(', ') : (vals[0] || '');
+    }
+
+    function submitForm() {
+        var naam = document.getElementById('q_naam').value.trim();
+        var email = document.getElementById('q_email').value.trim();
+        if (!naam || !email) {
+            alert('Vul je naam en e-mailadres in om door te gaan.');
+            return;
+        }
+
+        var body = [
+            'Naam: ' + naam,
+            'E-mail: ' + email,
+            'Telefoon: ' + (document.getElementById('q_telefoon').value || '-'),
+            '',
+            'Reden aanmelding: ' + (document.getElementById('q1').value || '-'),
+            'Functie: ' + getValues('q2', false),
+            'Frequentie leeg gevoel: ' + getValues('q3', false),
+            'Herkent: ' + getValues('q4', true),
+            'Leeftijdsgroep: ' + getValues('q5', true),
+            'Grootste uitdaging: ' + (document.getElementById('q6').value || '-'),
+            'Betekenis rustige groep: ' + (document.getElementById('q7').value || '-'),
+            'Eerder geprobeerd: ' + getValues('q8', false),
+            'Weerhoudende factoren: ' + getValues('q9', true),
+            'Open voor contact: ' + getValues('q10', false),
+        ].join('\n');
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://formsubmit.co/' + ONTVANGST_EMAIL;
+        form.style.display = 'none';
+
+        var fields = {
+            '_subject': 'Nieuwe inschrijving masterclass – ' + naam,
+            '_captcha': 'false',
+            '_template': 'table',
+            'Naam': naam,
+            'E-mail': email,
+            'Telefoon': document.getElementById('q_telefoon').value || '-',
+            'Reden aanmelding': document.getElementById('q1').value || '-',
+            'Functie': getValues('q2', false),
+            'Frequentie leeg gevoel': getValues('q3', false),
+            'Herkent': getValues('q4', true),
+            'Leeftijdsgroep': getValues('q5', true),
+            'Grootste uitdaging': document.getElementById('q6').value || '-',
+            'Betekenis rustige groep': document.getElementById('q7').value || '-',
+            'Eerder geprobeerd': getValues('q8', false),
+            'Weerhoudende factoren': getValues('q9', true),
+            'Open voor contact': getValues('q10', false),
+            '_next': window.location.href
+        };
+
+        Object.keys(fields).forEach(function(k) {
+            var inp = document.createElement('input');
+            inp.name = k;
+            inp.value = fields[k];
+            form.appendChild(inp);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+
+        showStep(12);
+    }
+
+    showStep(1);
+</script>
+
+</body>
+</html>

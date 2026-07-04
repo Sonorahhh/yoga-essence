@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geregistreerd! Van Chaos naar Rust op de Groep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1150885160005544');
+    fbq('track', 'PageView');
+    fbq('track', 'Lead');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1150885160005544&ev=Lead&noscript=1"/></noscript>
+    <!-- Einde Meta Pixel -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --teal: #59bcba;
+            --teal-dark: #48a8a6;
+            --btn: #f60c6e;
+            --btn-hover: #d4055d;
+        }
+
+        body {
+            font-family: 'Libre Franklin', sans-serif;
+            color: #2d2d2d;
+            background: #fff;
+        }
+
+        .top-banner {
+            background: var(--teal);
+            color: #fff;
+            text-align: center;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .main {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 52px 24px 60px;
+            text-align: center;
+        }
+
+        .wave { font-size: 32px; margin-bottom: 16px; }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #1a1a1a;
+            margin-bottom: 14px;
+        }
+
+        .confirmed {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        .steps-heading {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .steps {
+            text-align: left;
+            max-width: 540px;
+            margin: 0 auto 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .step {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: #f7fafa;
+            border-left: 3px solid var(--teal);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 16px;
+        }
+
+        .step-num { font-size: 22px; flex-shrink: 0; line-height: 1; }
+
+        .step-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 40px auto;
+            max-width: 160px;
+        }
+
+        .video-label {
+            font-size: 13px;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 14px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 560px;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto 48px;
+            background: #000;
+        }
+
+        .form-intro {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .form-sub {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        /* Typeform embed placeholder — vervang deze div door je Tally/Typeform embed code */
+        .form-placeholder {
+            background: #f7fafa;
+            border: 2px dashed var(--teal);
+            border-radius: 10px;
+            padding: 40px 24px;
+            color: #888;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .form-placeholder strong { color: var(--teal); display: block; font-size: 16px; margin-bottom: 8px; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 22px; }
+            .step-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-banner" id="top-banner"></div>
+
+<div class="main">
+    <div class="wave">👋</div>
+    <h1>Yes, je hebt je aangemeld!<br>Maar wacht nog even..</h1>
+    <p class="confirmed">Je hebt één van de tickets geclaimd: jouw plek is gereserveerd.</p>
+
+    <p class="steps-heading">Dit zijn de volgende stappen:</p>
+
+    <div class="steps">
+        <div class="step">
+            <span class="step-num">1️⃣</span>
+            <p class="step-text">Je krijgt binnen enkele minuten een e-mail met jouw unieke kijklink. Check ook zeker even je reclame/spam.</p>
+        </div>
+        <div class="step">
+            <span class="step-num">2️⃣</span>
+            <p class="step-text">Bekijk mijn video en vul onderstaande vragen in, zo kan ik de masterclass nog beter afstemmen op jouw situatie.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <p class="video-label">Bekijk de video van Esther:</p>
+    <video controls playsinline>
+        <source src="TY Page - Typeform.mp4" type="video/mp4">
+        Je browser ondersteunt geen video. Probeer een andere browser.
+    </video>
+
+    <p class="form-intro">Yes leuk! Laten we beginnen 📩</p>
+    <p class="form-sub">Vul de vragen hieronder in zodat Esther de masterclass op jou kan afstemmen.</p>
+
+    <iframe data-tally-src="https://tally.so/embed/zxg6Ra?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0" title="Onderzoek direct na inschrijving webinar"></iframe>
+    <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+</div>
+
+<script>
+    /* ============================================
+       AANPASSEN PER WEBINAR — alleen dit wijzigen
+       ============================================ */
+    var DATUM = 'woensdag 8 juli';
+    var TIJD  = '10:00 uur';
+    /* ============================================ */
+
+    document.getElementById('top-banner').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD + ' &nbsp;&middot;&nbsp; Jouw plek is gereserveerd!';
+</script>
+
+</body>
+</html>

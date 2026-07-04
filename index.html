@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gratis Masterclass: Van Chaos naar Rust op de Groep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1150885160005544');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1150885160005544&ev=PageView&noscript=1"/></noscript>
+    <!-- Einde Meta Pixel -->
+    <style>
+        /* Horizon font: zet Horizon.woff2 in de map 'fonts/' naast dit bestand */
+        @font-face {
+            font-family: 'Horizon';
+            src: local('Horizon'), url('fonts/Horizon.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --teal: #59bcba;
+            --teal-dark: #48a8a6;
+            --btn: #f60c6e;
+            --btn-hover: #d4055d;
+        }
+
+        body {
+            font-family: 'Libre Franklin', sans-serif;
+            color: #2d2d2d;
+            background: #fff;
+            padding-top: 46px;
+            padding-bottom: 68px;
+        }
+
+        /* BANNERS */
+        .top-banner {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: var(--teal);
+            color: #fff;
+            text-align: center;
+            padding: 13px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 200;
+            letter-spacing: 0.3px;
+        }
+
+        .bottom-banner {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--teal);
+            color: #fff;
+            text-align: center;
+            padding: 11px 20px 13px;
+            z-index: 200;
+        }
+        .bottom-banner strong { display: block; font-size: 16px; font-weight: 700; }
+        .bottom-banner span { font-size: 13px; opacity: 0.9; }
+
+        /* MAIN */
+        .main {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 52px 24px 40px;
+            text-align: center;
+        }
+
+        .label { font-size: 14px; color: #888; font-style: italic; margin-bottom: 8px; }
+
+        h1 {
+            font-family: 'Horizon', 'Libre Franklin', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin-bottom: 22px;
+        }
+
+        .subtitle {
+            font-size: 21px;
+            line-height: 1.5;
+            color: #333;
+            margin: 0 auto 16px;
+            max-width: 620px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 36px;
+            letter-spacing: 0.3px;
+        }
+
+        .cta-wrap { margin-bottom: 44px; }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--btn);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 20px 44px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .cta-btn:hover { background: var(--btn-hover); }
+        .cta-btn .main-text { display: block; font-size: 17px; font-weight: 800; letter-spacing: 0.5px; }
+        .cta-btn .sub-text  { display: block; font-size: 12px; margin-top: 5px; opacity: 0.85; }
+
+        .photo-wrap { max-width: 280px; margin: 0 auto 6px; }
+        .photo-wrap img { width: 100%; display: block; }
+
+        .name-label { font-size: 13px; color: var(--teal); font-style: italic; margin-bottom: 28px; }
+
+        .bio {
+            font-size: 16px;
+            line-height: 1.75;
+            color: #444;
+            margin: 0 auto 14px;
+            max-width: 620px;
+        }
+
+        hr { border: none; border-top: 1px solid #eee; margin: 32px auto; max-width: 180px; }
+
+        /* POPUP */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .overlay.open { display: flex; }
+
+        .popup {
+            background: #fff;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-wrap { height: 8px; background: #eaeaea; }
+        .progress-bar  { height: 100%; width: 70%; background: var(--btn); border-radius: 0 4px 4px 0; }
+        .progress-label { text-align: center; font-size: 12px; color: #bbb; padding: 6px 0 0; font-style: italic; }
+
+        .popup-inner { padding: 28px 32px 32px; }
+
+        .popup-close {
+            position: absolute;
+            top: 14px; right: 14px;
+            background: none;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #888;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .popup-close:hover { color: #333; border-color: #999; }
+
+        .popup h2 {
+            font-size: 21px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.3;
+            margin-bottom: 26px;
+            color: #1a1a1a;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555; }
+        .form-group input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 10px 2px;
+            font-size: 15px;
+            font-family: 'Libre Franklin', sans-serif;
+            outline: none;
+            background: transparent;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { border-bottom-color: var(--teal); }
+        .form-group input::placeholder { color: #ccc; }
+
+        .popup-btn {
+            width: 100%;
+            background: var(--teal);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-family: 'Libre Franklin', sans-serif;
+            transition: background 0.2s;
+        }
+        .popup-btn:hover { background: var(--teal-dark); }
+
+        .popup-date { text-align: center; margin-top: 16px; font-size: 14px; color: #555; }
+        .popup-note { text-align: center; margin-top: 8px; font-size: 13px; color: #888; font-style: italic; line-height: 1.5; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 26px; }
+            .subtitle { font-size: 18px; }
+            .popup-inner { padding: 20px 20px 24px; }
+            .popup h2 { font-size: 18px; }
+            .cta-btn { padding: 18px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-banner" id="top-banner"></div>
+
+<div class="main">
+    <p class="label">Gratis masterclass:</p>
+    <h1>Van chaos naar rust op de groep:</h1>
+    <p class="subtitle">Stop met sussen, corrigeren en brandjes blussen zodat je weer weet waarom je ervoor koos om met kinderen te werken</p>
+    <p class="tagline">Zonder extra programma. Zonder zweverig gedoe.</p>
+
+    <div class="cta-wrap">
+        <button class="cta-btn" onclick="openPopup()">
+            <span class="main-text">JA, IK WIL HIER BIJ ZIJN 🐾</span>
+            <span class="sub-text">Aanmelden kan alleen via deze pagina</span>
+        </button>
+    </div>
+
+    <div class="photo-wrap">
+        <img src="esther.png" alt="Esther Muizelaar">
+    </div>
+    <p class="name-label">Esther Muizelaar &nbsp;·&nbsp; Kinderyogadocent &amp; Opleider</p>
+
+    <p class="bio">Mijn naam is <strong>Esther Muizelaar</strong>. Ik werkte 17 jaar in de kinderopvang en kwam elke dag leeg thuis met het gevoel dat ik de kinderen niet kon geven wat ze nodig hadden. Totdat ik ontdekte hoe je met 5 minuten per dag de hele sfeer op je groep omdraait, zonder harder te werken.</p>
+    <p class="bio">Inmiddels heb ik meer dan 1000 pedagogisch professionals en gastouders geholpen om datzelfde te bereiken. 🌿</p>
+
+    <hr>
+
+    <div class="cta-wrap">
+        <button class="cta-btn" onclick="openPopup()">
+            <span class="main-text">JA, DIT WIL IK! 📅</span>
+            <span class="sub-text">Vol = vol! Het is live.</span>
+        </button>
+    </div>
+</div>
+
+<div class="bottom-banner" id="bottom-banner"></div>
+
+<!-- Popup -->
+<div class="overlay" id="overlay">
+    <div class="popup">
+        <div class="progress-wrap"><div class="progress-bar"></div></div>
+        <p class="progress-label">Bijna klaar...</p>
+        <button class="popup-close" onclick="closePopup()" aria-label="Sluiten">&#xd7;</button>
+        <div class="popup-inner">
+            <h2>Meld je hier aan voor mijn GRATIS masterclass:</h2>
+            <form onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>Je voornaam</label>
+                    <input type="text" name="voornaam" placeholder="Voornaam">
+                </div>
+                <div class="form-group">
+                    <label>E-mailadres *</label>
+                    <input type="email" name="email" placeholder="E-mail" required>
+                </div>
+                <button type="submit" class="popup-btn">JA, IK CLAIM MIJN GRATIS PLEK</button>
+            </form>
+            <p class="popup-date" id="popup-date"></p>
+            <p class="popup-note">Het is live, inclusief uitgebreide Q&amp;A,<br>maar vol = vol, er is beperkt plek!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ============================================
+       AANPASSEN PER WEBINAR — alleen dit wijzigen
+       ============================================ */
+    var DATUM = 'vrijdag 10 juli';
+    var TIJD  = '10:00 uur';
+    var WEBINARGEEK_URL = 'https://esthermuizelaar.webinargeek.com/van-chaos-naar-rust-op-de-groep';
+    /* ============================================ */
+
+    document.getElementById('top-banner').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD + ' &nbsp;&middot;&nbsp; Aanmelden kan alleen via deze pagina';
+    document.getElementById('bottom-banner').innerHTML = '<strong>' + DATUM + ' om ' + TIJD + '!</strong><span>Het is live dus zorg dat je er live bij bent.</span>';
+    document.getElementById('popup-date').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD;
+
+    function openPopup() {
+        document.getElementById('overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePopup() {
+        document.getElementById('overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('overlay').addEventListener('click', function(e) {
+        if (e.target === this) closePopup();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closePopup();
+    });
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        window.location.href = WEBINARGEEK_URL;
+    }
+</script>
+
+</body>
+</html>

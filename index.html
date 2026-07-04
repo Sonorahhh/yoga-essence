@@ -327,7 +327,11 @@
 
     function handleSubmit(e) {
         e.preventDefault();
-        window.location.href = WEBINARGEEK_URL;
+        var form = e.target;
+        var naam = encodeURIComponent(form.voornaam.value || '');
+        var email = encodeURIComponent(form.email.value || '');
+        var url = WEBINARGEEK_URL + '?first_name=' + naam + '&email=' + email;
+        window.location.href = url;
     }
 </script>
 

@@ -155,7 +155,7 @@
             background: #fff;
             border-radius: 14px;
             width: 100%;
-            max-width: 460px;
+            max-width: 560px;
             overflow: hidden;
             position: relative;
         }
@@ -164,7 +164,7 @@
         .progress-bar  { height: 100%; width: 70%; background: var(--btn); border-radius: 0 4px 4px 0; }
         .progress-label { text-align: center; font-size: 12px; color: #bbb; padding: 6px 0 0; font-style: italic; }
 
-        .popup-inner { padding: 28px 32px 32px; }
+        .popup-inner { padding: 12px; }
 
         .popup-close {
             position: absolute;
@@ -274,24 +274,9 @@
 <!-- Popup -->
 <div class="overlay" id="overlay">
     <div class="popup">
-        <div class="progress-wrap"><div class="progress-bar"></div></div>
-        <p class="progress-label">Bijna klaar...</p>
         <button class="popup-close" onclick="closePopup()" aria-label="Sluiten">&#xd7;</button>
         <div class="popup-inner">
-            <h2>Meld je hier aan voor mijn GRATIS masterclass:</h2>
-            <form onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label>Je voornaam</label>
-                    <input type="text" name="voornaam" placeholder="Voornaam">
-                </div>
-                <div class="form-group">
-                    <label>E-mailadres *</label>
-                    <input type="email" name="email" placeholder="E-mail" required>
-                </div>
-                <button type="submit" class="popup-btn">JA, IK CLAIM MIJN GRATIS PLEK</button>
-            </form>
-            <p class="popup-date" id="popup-date"></p>
-            <p class="popup-note">Het is live, inclusief uitgebreide Q&amp;A,<br>maar vol = vol, er is beperkt plek!</p>
+            <div id="mw_3AKrpViiKCY_webinargeek"></div>
         </div>
     </div>
 </div>
@@ -302,17 +287,32 @@
        ============================================ */
     var DATUM = 'vrijdag 10 juli';
     var TIJD  = '10:00 uur';
-    var WEBINARGEEK_URL = 'https://esthermuizelaar.webinargeek.com/van-chaos-naar-rust-op-de-groep';
     /* ============================================ */
 
     document.getElementById('top-banner').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD + ' &nbsp;&middot;&nbsp; Aanmelden kan alleen via deze pagina';
     document.getElementById('bottom-banner').innerHTML = '<strong>' + DATUM + ' om ' + TIJD + '!</strong><span>Het is live dus zorg dat je er live bij bent.</span>';
-    document.getElementById('popup-date').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD;
+
+    var wgLoaded = false;
 
     function openPopup() {
         document.getElementById('overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
+        if (!wgLoaded) {
+            wgLoaded = true;
+            var gn = 'mw_3AKrpViiKCY';
+            window[gn] = window[gn] || function() { (window[gn].q = window[gn].q || []).push(arguments); };
+            var se = document.createElement('script');
+            se.async = 1;
+            se.src = 'https://malong.webinargeek.com/malong.embed.js?t=' + new Date().toISOString().slice(0, -9);
+            document.head.appendChild(se);
+            window[gn]('init', {
+                project: 'registration',
+                identifier: '0bce36b8-59ea-47e3-adea-4bf86ca6c4bb',
+                shape: 'inline'
+            });
+        }
     }
+
     function closePopup() {
         document.getElementById('overlay').classList.remove('open');
         document.body.style.overflow = '';
@@ -324,15 +324,6 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closePopup();
     });
-
-    function handleSubmit(e) {
-        e.preventDefault();
-        var form = e.target;
-        var naam = encodeURIComponent(form.voornaam.value || '');
-        var email = encodeURIComponent(form.email.value || '');
-        var url = WEBINARGEEK_URL + '?first_name=' + naam + '&email=' + email;
-        window.location.href = url;
-    }
 </script>
 
 </body>

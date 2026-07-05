@@ -193,15 +193,8 @@
 <div class="bottom-banner" id="bottom-banner"></div>
 
 <script>
-    /* ============================================
-       AANPASSEN PER WEBINAR — alleen dit wijzigen
-       ============================================ */
-    var DATUM = 'vrijdag 10 juli';
-    var TIJD  = '10:00 uur';
-    /* ============================================ */
-
-    document.getElementById('top-banner').innerHTML = '&#128197; ' + DATUM + ' om ' + TIJD + ' &nbsp;&middot;&nbsp; Aanmelden kan alleen via deze pagina';
-    document.getElementById('bottom-banner').innerHTML = '<strong>' + DATUM + ' om ' + TIJD + '!</strong><span>Het is live dus zorg dat je er live bij bent.</span>';
+    document.getElementById('top-banner').innerHTML = '&#128197; Kies jouw datum en claim je plek &nbsp;&middot;&nbsp; Beperkt aantal plekken per datum';
+    document.getElementById('bottom-banner').innerHTML = '<strong>Kies jouw datum en schrijf je in! &#129321;</strong><span>Het is live dus zorg dat je er live bij bent.</span>';
 
     function scrollNaarFormulier() {
         document.getElementById('aanmelden').scrollIntoView({behavior: 'smooth'});
